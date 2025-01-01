@@ -29,7 +29,7 @@ on:
         required: true
         type: string
       WRT_BRANCH:
-        required: true
+        required: false
         type: string
       WRT_SOURCE:
         required: false
