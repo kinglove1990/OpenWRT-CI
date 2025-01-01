@@ -33,7 +33,7 @@ jobs:
       #max-parallel: 3
       matrix:
         TARGET: [IPQ807X-WIFI-YES]
-        SOURCE: [VIKINGYFY/immortalwrt]
+        SOURCE: [kinglove1990/immortalwrt]
         BRANCH: [main]
 
     #调用公用编译核心WRT-CORE.yml
