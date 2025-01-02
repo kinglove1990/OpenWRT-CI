@@ -125,21 +125,26 @@ jobs:
         uses: actions/cache@main
         with:
           key: ${{env.WRT_TARGET}}-${{env.WRT_VER}}-${{env.WRT_HASH}}
-          restore-keys: ${{env.WRT_TARGET}}-${{env.WRT_VER}}-
+          restore-keys: ${{env.WRT_TARGET}}-${{env.WRT_VER}}
           path: |
             ./wrt/.ccache
-            ./wrt/staging_dir
+            ./wrt/staging_dir/host*
+            ./wrt/staging_dir/tool*
 
       - name: Update Caches
         if: env.WRT_TEST != 'true'
         run: |
-          find "./wrt/staging_dir" -type d -name "stamp" -not -path "*target*" | while read -r DIR; do
-            find "$DIR" -type f -exec touch {} +
-          done
+          if [ -d "./wrt/staging_dir" ]; then
+            find "./wrt/staging_dir" -type d -name "stamp" -not -path "*target*" | while read -r DIR; do
+              find "$DIR" -type f -exec touch {} +
+            done
 
-          mkdir -p ./wrt/tmp
-          echo "1" > ./wrt/tmp/.build
-          echo "toolchain skiped done!"
+            mkdir -p ./wrt/tmp && echo "1" > ./wrt/tmp/.build
+
+            echo "toolchain skiped done!"
+          else
+            echo "caches missed!"
+          fi
 
           if ${{steps.check-cache.outputs.cache-hit != 'true'}}; then
             CACHE_LIST=$(gh cache list --key "$WRT_TARGET-$WRT_VER" | cut -f 1)
